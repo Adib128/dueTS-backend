@@ -20,7 +20,7 @@ jobs:
           node-version: 21
 
       - name: Install dependencies
-        uses: npm Install
+        uses: npm install
 
       - name: Run tests
-        uses: npm run test      
+        uses: npm run test
