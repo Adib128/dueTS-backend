@@ -2,9 +2,12 @@ name: CI/CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - '**'
   pull_request:
-    branches: [main]
+    branches:
+      - staging
+      - main
 
 jobs:
   build-and-test:
@@ -34,7 +37,8 @@ jobs:
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
-    environment: production
+    if: github.event_name =='pull_request'
+    environment: ${{github.base_ref}}
 
     steps:
       - name: Checkout code
@@ -42,6 +46,6 @@ jobs:
 
       - name: Deploy to Render
         run: |
-          echo "Deploying to Render..."
+          echo "Deploying to Render in ${{ github.base_ref }} environment..."
           curl -X POST "https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}" \
-          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
